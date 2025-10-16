@@ -26,8 +26,107 @@ circunstancias = {1:"No Programado", 2:"Programado", 9:"Desconocido"}
 ###no verificados
 tipos_alta = {1:"Alta voluntaria", 2:"Alta médica", 3:"Alta a otro centro", 4:"Fallecimiento", 5:"Otro", 9:"Desconocido"}
 servicios = {n: i+1 for i, n in enumerate(df["Servicio"].dropna().unique())}
-paises = {724:"España", 826:"Reino Unido", 250:"Francia", 276:"Alemania", 380:"Italia", 56:"Bélgica"}
-procedencias = {1:"Urgencias", 2:"Consulta Externa", 3:"Otro Servicio Hospitalario", 4:"Otro Centro Sanitario", 5:"Domicilio", 9:"Desconocido"}
+paises = {
+    724:"España", 
+    826:"Reino Unido", 
+    250:"Francia", 
+    276:"Alemania", 
+    380:"Italia", 
+    56:"Bélgica",
+    100:"Bulgaria",
+    112:"Bielorrusia",
+    120:"Camerún",
+    124:"Canadá",
+    152:"Chile",
+    156:"China",
+    170:"Colombia",
+    178:"Congo",
+    188:"Costa Rica",
+    191:"Croacia",
+    192:"Cuba",
+    203:"República Checa",
+    208:"Dinamarca",
+    214:"República Dominicana",
+    218:"Ecuador",
+    222:"El Salvador",
+    226:"Guinea Ecuatorial",
+    231:"Etiopía",
+    246:"Finlandia",
+    266:"Gabón",
+    268:"Georgia",
+    288:"Ghana",
+    324:"Guinea",
+    340:"Honduras",
+    348:"Hungría",
+    356:"India",
+    364:"Irán",
+    372:"Irlanda",
+    376:"Israel",
+    388:"Jamaica",
+    430:"Liberia",
+    440:"Lituania",
+    466:"Mali",
+    484:"México",
+    498:"Moldavia",
+    504:"Marruecos",
+    528:"Países Bajos",
+    558:"Nicaragua",
+    562:"Níger",
+    566:"Nigeria",
+    578:"Noruega",
+    586:"Pakistán",
+    600:"Paraguay",
+    604:"Perú",
+    612:"Polonia",
+    616:"Portugal",
+    620:"Portugal",
+    624:"Guinea-Bissau",
+    642:"Rumania",
+    643:"Rusia",
+    686:"Senegal",
+    688:"Serbia",
+    702:"Singapur",
+    705:"Eslovenia",
+    732:"Sahara Occidental",
+    752:"Suecia",
+    756:"Suiza",
+    760:"Siria",
+    804:"Ucrania",
+    840:"Estados Unidos",
+    854:"Burkina Faso",
+    858:"Uruguay",
+    862:"Venezuela",
+    "004":"Afganistán",
+    "008":"Albania",
+    "012":"Argelia",
+    "020":"Andorra",
+    "024":"Angola",
+    "032":"Argentina",
+    "040":"Austria",
+    "048":"Bahrein",
+    "051":"Armenia",
+    "068":"Bolivia",
+    "076":"Brasil",
+    "ZZZ":"Desconocido"
+}
+procedencias = {
+    10: "Atención Primaria",
+    21: "Servicios del propio hospital: Urgencias",
+    22: "Servicios del propio hospital: Cirugía ambulatoria",
+    23: "Servicios del propio hospital: Hospital de día médico",
+    24: "Servicios del propio hospital: Hospitalización",
+    25: "Servicios del propio hospital: Hospitalización a domicilio",
+    26: "Servicios del propio hospital: Procedimientos de especial complejidad",
+    27: "Servicios del propio hospital: Consultas",
+    28: "Otros servicios",
+    30: "Servicios de otro hospital/centro sanitario",
+    40: "Por iniciativa del/de la paciente",
+    50: "Emergencias médicas",
+    60: "Centro sociosanitario",
+    70: "Por orden judicial",
+    80: "Otros",
+    90: "Desconocido"
+}
 continualidades = {1:"Ambulatoria", 2:"Domiciliaria", 3:"Hospitalización Parcial", 4:"Rehabilitación Psicosocial", 5:"Otro Centro Sanitario", 9:"Desconocido"}
 ingresos_uci = {1:"No", 2:"Sí", 9:"Desconocido"}
 grd_apr_tipos = {n: i+1 for i, n in enumerate(df["Tipo GRD APR"].dropna().unique())} 
@@ -81,6 +180,7 @@ Table pais [headercolor: #175e7a] {
 Table procedencia [headercolor: #175e7a] {
 	id integer [ pk, increment, not null, unique ]
 	nombre varchar2 [ not null ]
+	
 }
 
 Table continualidad_asistencial [headercolor: #175e7a] {
@@ -227,6 +327,7 @@ for i, r in enumerate(df.itertuples(), start=1):
                 "paciente_id": i,
                 "tipo_POA_id": tipos_POA.get(getattr(r, col.replace(" ", "_")))
             })
+procedencia_rows = []
 
 def insert_sql(table, row):
     def format_val(v):
