@@ -256,44 +256,61 @@ def insert_sql(table, row):
     return f"INSERT INTO {table} ({cols}) VALUES ({vals});"
 
 
-for nombre in nombres.items():
-    print(insert_sql("nombre", {"id": nombre[1], "nombre": nombre[0]}))
+# Open a file to write all SQL statements
+with open('insert_statements.sql', 'w', encoding='utf-8') as sql_file:
+    for nombre in nombres.items():
+        sql_file.write(insert_sql("nombre", {"id": nombre[1], "nombre": nombre[0]}) + "\n")
+    print("Insertados" + str(len(nombres)) + " nombres")
 
-for sexo in sexos.items():
-    print(insert_sql("sexo", {"id": sexo[0], "nombre": sexo[1]}))
+    for sexo in sexos.items():
+        sql_file.write(insert_sql("sexo", {"id": sexo[0], "nombre": sexo[1]}) + "\n")
+    print("Insertados" + str(len(sexos)) + " sexos")
 
-for comunidad in comunidades.items():
-    print(insert_sql("comunidad_autonoma", {"id": comunidad[1], "nombre": comunidad[0]}))
+    for comunidad in comunidades.items():
+        sql_file.write(insert_sql("comunidad_autonoma", {"id": comunidad[1], "nombre": comunidad[0]}) + "\n")
+    print("Insertados" + str(len(comunidades)) + " comunidades")
 
-for circunstancia in circunstancias.items():
-    print(insert_sql("circunstancia_contacto", {"id": circunstancia[0], "nombre": circunstancia[1]}))
+    for circunstancia in circunstancias.items():
+        sql_file.write(insert_sql("circunstancia_contacto", {"id": circunstancia[0], "nombre": circunstancia[1]}) + "\n")
+    print("Insertados" + str(len(circunstancias)) + " circunstancias")
 
-for tipo_alta in tipos_alta.items():
-    print(insert_sql("tipo_alta", {"id": tipo_alta[0], "nombre": tipo_alta[1]}))
+    for tipo_alta in tipos_alta.items():
+        sql_file.write(insert_sql("tipo_alta", {"id": tipo_alta[0], "nombre": tipo_alta[1]}) + "\n")
+    print("Insertados" + str(len(tipos_alta)) + " tipos de alta")
     
-for servicio in servicios.items():
-    print(insert_sql("servicio", {"id": servicio[1], "nombre": servicio[0]}))
+    for servicio in servicios.items():
+        sql_file.write(insert_sql("servicio", {"id": servicio[1], "nombre": servicio[0]}) + "\n")
+    print("Insertados" + str(len(servicios)) + " servicios")
 
-for pais in paises.items():
-    print(insert_sql("pais", {"id": pais[0], "nombre": pais[1]}))
+    for pais in paises.items():
+        sql_file.write(insert_sql("pais", {"id": pais[0], "nombre": pais[1]}) + "\n")
+    print("Insertados" + str(len(paises)) + " paises")
 
-for procedencia in procedencias.items():
-    print(insert_sql("procedencia", {"id": procedencia[0], "nombre": procedencia[1]}))
+    for procedencia in procedencias.items():
+        sql_file.write(insert_sql("procedencia", {"id": procedencia[0], "nombre": procedencia[1]}) + "\n")
+    print("Insertados" + str(len(procedencias)) + " procedencias")
 
-for continualidad in continualidades.items():
-    print(insert_sql("continualidad_asistencial", {"id": continualidad[0], "nombre": continualidad[1]}))
+    for continualidad in continualidades.items():
+        sql_file.write(insert_sql("continualidad_asistencial", {"id": continualidad[0], "nombre": continualidad[1]}) + "\n")
+    print("Insertados" + str(len(continualidades)) + " continualidades asistenciales")
 
-for ingreso_uci in ingresos_uci.items():
-    print(insert_sql("ingreso_UCI", {"id": ingreso_uci[0], "nombre": ingreso_uci[1]}))
+    for ingreso_uci in ingresos_uci.items():
+        sql_file.write(insert_sql("ingreso_UCI", {"id": ingreso_uci[0], "nombre": ingreso_uci[1]}) + "\n")
+    print("Insertados" + str(len(ingresos_uci)) + " ingresos UCI")
 
-for grd_apr_tipo in grd_apr_tipos.items():
-    print(insert_sql("GRD_APR", {"id": grd_apr_tipo[1], "GRD": grd_apr_tipo[0]}))
+    for grd_apr_tipo in grd_apr_tipos.items():
+        sql_file.write(insert_sql("GRD_APR", {"id": grd_apr_tipo[1], "GRD": grd_apr_tipo[0]}) + "\n")
+    print("Insertados" + str(len(grd_apr_tipos)) + " tipos GRD APR")
 
-
-# Generar e imprimir las sentencias SQL para la tabla paciente
-for row in paciente_rows:
-    print(insert_sql("paciente", row))
-
-for i, row in enumerate(poa_diagnostico_rows, start=1):
-    row["id"] = i
-    print(insert_sql("POA_diagnostico", row))
+    # Write paciente table inserts
+    for row in paciente_rows:
+        sql_file.write(insert_sql("paciente", row) + "\n")
+    print(f"Insertados {len(paciente_rows)} pacientes")
+    
+    # Write POA_diagnostico table inserts
+    for i, row in enumerate(poa_diagnostico_rows, start=1):
+        row["id"] = i
+        sql_file.write(insert_sql("POA_diagnostico", row) + "\n")
+    print(f"Insertados {len(poa_diagnostico_rows)} POA_diagnostico")
+    
+print(f"SQL insert statements have been written to insert_statements.sql")
