@@ -4,7 +4,7 @@ import datetime
 
 df = pd.read_csv('SaludMental.csv')
 # limit to 10 rows for testing
-df = df.head(100)
+#df = df.head(5000)
 
 
 # Drop columns with in which all values are NaN
@@ -132,9 +132,6 @@ ingresos_uci = {1:"No", 2:"Sí", 9:"Desconocido"}
 grd_apr_tipos = {n: i+1 for i, n in enumerate(df["Tipo GRD APR"].dropna().unique())} 
 
 tipos_POA = {"S": "Sí", "N": "No", "E": "Extento", "D": "Desconocido","I":"Indeterminado Clínicamente"}
-
-print("##########Sexos:\n", sexos)
-print("##########Comunidades:\n", comunidades)
 
 """
 Table paciente [headercolor: #175e7a] {
@@ -318,17 +315,15 @@ for _, r in df.iterrows():
 # POA Diagnóstico Principal + POA Diagnóstico 2 ... POA Diagnóstico 20
 filas_POA = {"POA Diagnóstico Principal"} | {f"POA Diagnóstico {i}" for i in range(2, 21)}
 
-# FOr each row and for each POA Diagnóstico column, create a row in POA_diagnostico table, if a value does not exist, skip it, if a column from filas_POA does not exist, skip it
-poa_diagnostico_rows = []
-for i, r in enumerate(df.itertuples(), start=1):
-    for col in filas_POA:
-        if hasattr(r, col.replace(" ", "_")) and pd.notna(getattr(r, col.replace(" ", "_"))):
-            poa_diagnostico_rows.append({
-                "paciente_id": i,
-                "tipo_POA_id": tipos_POA.get(getattr(r, col.replace(" ", "_")))
-            })
-procedencia_rows = []
+# FOr each row and for each POA Diagnóstico column, create a row in POA_diagnostico table, if a value does not exist, skip it
 
+"""poa_diagnostico_rows = []
+for i, r in enumerate(df.itertuples(), start=1):
+    # get all POA Diagnóstico values for this row
+    for col in filas_POA:
+        # check if theres a value in this row and column
+        print(col, getattr(r, col))
+"""
 def insert_sql(table, row):
     def format_val(v):
         # Convert pandas/None/NaN/NaT to SQL NULL
@@ -366,6 +361,10 @@ with open('insert_statements.sql', 'w', encoding='utf-8') as sql_file:
     for sexo in sexos.items():
         sql_file.write(insert_sql("sexo", {"id": sexo[0], "nombre": sexo[1]}) + "\n")
     print("Insertados" + str(len(sexos)) + " sexos")
+
+    for tipo_POA in tipos_POA.items():
+        sql_file.write(insert_sql("tipo_POA", {"id": tipo_POA[0], "nombre": tipo_POA[1]}) + "\n")
+    print("Insertados" + str(len(tipos_POA)) + " tipos POA")
 
     for comunidad in comunidades.items():
         sql_file.write(insert_sql("comunidad_autonoma", {"id": comunidad[1], "nombre": comunidad[0]}) + "\n")
@@ -409,9 +408,9 @@ with open('insert_statements.sql', 'w', encoding='utf-8') as sql_file:
     print(f"Insertados {len(paciente_rows)} pacientes")
     
     # Write POA_diagnostico table inserts
-    for i, row in enumerate(poa_diagnostico_rows, start=1):
+    """for i, row in enumerate(poa_diagnostico_rows, start=1):
         row["id"] = i
         sql_file.write(insert_sql("POA_diagnostico", row) + "\n")
     print(f"Insertados {len(poa_diagnostico_rows)} POA_diagnostico")
-    
+    """
 print(f"SQL insert statements have been written to insert_statements.sql")
